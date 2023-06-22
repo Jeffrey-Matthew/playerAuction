@@ -3,3 +3,4 @@ flask_dance
 flask_sqlalchemy
 flask_login
 flask_socketio
+gunicorn
