@@ -1,0 +1,73 @@
+#curuser {
+    color: green;
+    font-weight: bolder;
+
+}
+
+body {
+    background-color: lightskyblue;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+
+label {
+    font-weight: bold;
+}
+
+#demo {
+    text-align: center;
+    font-size: 60px;
+    margin-top: 0px;
+}
+
+.resultContainer {
+    display: flex;
+    height: 100%;
+}
+
+.left,
+.right {
+    flex: 1;
+    overflow: auto;
+}
+
+.left {
+    background-color: lightcoral;
+}
+
+.right {
+    background-color: lightseagreen;
+}
+
+#reqdAttr {
+
+    display: none;
+}
+
+/* #roomID {
+    display: none;
+} */
+
+.container {
+    display: flex;
+    flex-direction: row;
+    /* align-items: center;
+    /* Vertically center the content */
+    /* justify-content: center; */
+    /* Horizontally center the content */
+    /* height: 100vh; */
+    /* */
+
+    /* Set a height for the container if needed */
+
+}
+
+#PlayerBox {
+    border: 3px solid springgreen;
+}
