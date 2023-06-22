@@ -58,7 +58,8 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all() # create the SQLite database
     
-    socketio.run(app,host='127.0.0.1', port=5053,debug=True)
+    #socketio.run(app,host='127.0.0.1', port=5053,debug=True)
+    socketio.run(app=app)
     #socketio.run(app,host='172.20.20.255', port=5053,debug=True)
     #app.run(host='127.0.0.1', port=5052,debug=True) # run the flask app on debug mode
 

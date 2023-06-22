@@ -3,11 +3,11 @@
 {% block content %}
 <h1 class="title">
     Welcome, {{ name }}!
-    <form action="http://127.0.0.1:5053/create" method="post">
+    <form action="{{url_for('gameModule.createGame')}}" method="post">
         <input name="createBtn" id="createGame" type="submit" value="Create Game" />
 
     </form>
-    <form action="http://127.0.0.1:5053/join" method="post">
+    <form action="{{ url_for('gameModule.joinGame') }}" method="post">
 
         <input name="joinBtn" id="joinGame" type="submit" value="Join Game" />
     </form>
