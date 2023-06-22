@@ -1,0 +1,354 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+        crossorigin="anonymous"></script>
+    <title>Match is back!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <!-- <p id="demo"></p>
+
+    <script>
+        // Set the date we're counting down to
+        var countDownDate = new Date().getTime() + 6000; // Set the countdown for 5 seconds (5000 milliseconds)
+
+        // Update the count down every 1 second
+        var x = setInterval(function () {
+
+            // Get today's date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // If the count down is over, write some text and clear the interval
+            if (distance <= 0) {
+                clearInterval(x);
+                document.getElementById("demo").innerHTML = "EXPIRED";
+                // document.getElementById("bidBtn").click()
+            } else {
+                // Time calculations for seconds
+                var seconds = Math.ceil(distance / 1000); // Use Math.ceil to round up to the nearest whole second
+
+                // Output the remaining seconds in an element with id="demo"
+                document.getElementById("demo").innerHTML = seconds + "s";
+            }
+        }, 1000);
+    </script> -->
+    <div class="container">
+        <div class="content">
+            <p id="userPrompt">{{ userActionPrompt }}</p>
+            <div id="reqdAttr">
+                <input type="text" name="logged_user" id="logged_user" value={{logged_user}} readonly disabled>
+                <!-- <label for="roomNo">Room No::</label> -->
+                <input type="text" id="roomID" name="roomID" value={{ roomNo }} readonly disabled><br><br>
+
+                <!-- <label for="curUser">Current User::</label> -->
+                <input type="text" id="curUser" name="curUser" value={{ userName }} readonly disabled><br><br>
+                <!-- <label for="nxtUser">Next User::</label> -->
+                <input type="text" id="nxtUser" name="nxtUser" value={{ nextUser }} readonly disabled><br><br>
+            </div>
+            <label for="cur_bid">Current Bid::</label>
+            <input type="text" id="cur_bid" name="cur_bid" value={{ bid }} readonly><br><br>
+            <p>Enter Your Bid:</p>
+            <p><input type="number" id="newBidvalue" min={{ bid }} name="vb" {{ editToggleBid }} /></p>
+            <div>
+                <p><input name="bidBtnVal" id="bidBtn" type="submit" value="Bid Player" {{ editToggleBid }} /></p>
+                <p><input name="nxtPlayerVal" id="nxtPlayerBtn" type="submit" value="Next, please!" {{ editToggleBid }}>
+                </p>
+                <!-- <input type="button" value="MidGame Test" id="midGameTest"> -->
+            </div>
+            <!-- <input name="nxtPlayerVal" id="nxtPlayerBtn" type="submit" value="Next Player" /> -->
+            <label for="curPlayer">Current Player::</label>
+            <input type="text" id="curPlayer" name="Current Player" value={{ playerName }} readonly
+                onchange="updateImageSrc()"><br><br>
+
+            <img id="playerImage" src="{{url_for('static', filename='images/' +playerName+ '.jpeg')}}" align="middle" />
+        </div>
+        <div class="content">
+
+
+            <div id="PlayerBox">
+                <label for="userBudget">Your Budget (in USD) </label>
+                <input type="number" name="userBudget" id="userBudget" value=50 readonly>
+                <h3>Your Players</h3>
+                <ol id="playerList">
+
+                </ol>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        // playerName = 'Dhoni'
+        const socket = io({ autoConnect: false });
+
+        // // Join a room
+        socket.connect()
+        const element = document.getElementById("nxtPlayerBtn");
+
+        if (element) {
+            element.addEventListener('click', function () {
+
+                socket.emit('nxtPlayerParent', { logged_user: document.getElementById("logged_user").value, room: document.getElementById("roomID").value });
+            });
+        } else {
+            console.error('Element not found');
+        }
+        document.getElementById("bidBtn").addEventListener("click", function () {
+            //socket.connect()
+            // var temp = document.getElementById("curUser").value
+            // document.getElementById("curUser").value = document.getElementById("nxtUser").value
+            // document.getElementById("nxtUser").value = temp
+            // document.getElementById("cur_bid").value = document.getElementById("newBidvalue").value
+            var newBidValue = document.getElementById("newBidvalue").value
+            var currentBidValue = document.getElementById("cur_bid").value
+            var budget = document.getElementById("userBudget").value
+            var myList = document.getElementById("playerList");
+            var listItems = myList.getElementsByTagName("li");
+            var playerlsLen = listItems.length
+            var remBudget = (4 - playerlsLen) * 5
+            if (parseInt(newBidValue) > parseInt(budget) || parseInt(newBidValue) < parseInt(currentBidValue) || isNaN(parseInt(newBidValue)) || parseInt(remBudget) + parseInt(newBidValue) > parseInt(budget)) {
+                alert("Please re-bid since you are above your Budget or lessen than the oppositions bid or is empty or you dont have budget to buy rest")
+            }
+            else {
+
+                socket.emit('refreshPage', { room: document.getElementById("roomID").value, newBidValue: document.getElementById("newBidvalue").value });
+            }
+        });
+        socket.on('refresh', function (data) {
+            console.log('Page Refresh')
+            // var temp = document.getElementById("curUser").value
+            // document.getElementById("curUser").value = document.getElementById("nxtUser").value
+            // document.getElementById("nxtUser").value = temp
+            // document.getElementById("cur_bid").value = document.getElementById("newBidvalue").value
+            // loggedUserName = document.getElementById("logged_user").value
+            // if (loggedUserName == document.getElementById("curUser").value) {
+            //     var button = document.getElementById("bidBtn")
+            //     button.disabled = false
+            // }
+            // else {
+            //     var button = document.getElementById("bidBtn")
+            //     button.disabled = true
+            // }
+            new_url = '/match/' + document.getElementById("roomID").value
+            var newBidval = data['newBidValue']
+            fetch(new_url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: document.getElementById("roomID").value, curUser: document.getElementById("curUser").value, nextUser: document.getElementById("nxtUser").value, newBid: document.getElementById("newBidvalue").value
+                })
+
+            }).then(response => response.json())
+                .then(data => {
+                    console.log('Response from server:', data);
+                    document.getElementById("curUser").value = data['userName']
+                    document.getElementById("nxtUser").value = data['nextUser']
+                    document.getElementById("cur_bid").value = newBidval
+                    var logged_user_name = document.getElementById("logged_user").value
+                    // alert(logged_user_name)
+                    if (logged_user_name == data['nextUser']) {
+                        document.getElementById("newBidvalue").readOnly = true
+                        document.getElementById("bidBtn").disabled = true
+                        document.getElementById("nxtPlayerBtn").disabled = true
+                        document.getElementById("newBidvalue").disabled = true
+                        document.getElementById("userPrompt").innerHTML = 'Please wait for the other user'
+                    }
+                    else {
+                        document.getElementById("newBidvalue").readOnly = false
+                        document.getElementById("bidBtn").disabled = false
+                        document.getElementById("nxtPlayerBtn").disabled = false
+                        document.getElementById("newBidvalue").disabled = false
+                        document.getElementById("userPrompt").innerHTML = 'Play On'
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            //window.location.href = data.url + '/' + data.roomId; // Redirect to the new page
+        });
+        //alert(document.getElementById("nxtPlayerBtn"))
+
+        // document.getElementById("midGameTest").addEventListener("click", function () {
+        //     socket.emit("midGameParent", { logged_user: document.getElementById("logged_user").value })
+        // })
+        socket.on('midGame', function (data) {
+            console.log(data)
+            var arg1 = data.arg1;
+            var myList = document.getElementById("playerList");
+            var listItems = myList.getElementsByTagName("li");
+            var values = [];
+
+            for (var i = 0; i < listItems.length; i++) {
+                values.push(listItems[i].textContent);
+            }
+            var arg2 = values
+            // alert('URL Modify' + arg1 + data.url)
+            //window.location.href = '/midGame?arg1=' + arg1
+            window.location.href = '/midGame?arg1=' + arg1 + '&arg2=' + arg2
+        })
+
+
+
+        socket.on('nxtPlayerPrompt', function (data) {
+            var clicked_userName = data['clickedUserName']
+            var logged_user_name = document.getElementById("logged_user").value
+            //alert(clicked_userName)
+            if (logged_user_name == clicked_userName) {
+                new_url = '/match/' + document.getElementById("roomID").value
+                var newBidval = 5
+                fetch(new_url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data: document.getElementById("roomID").value, curUser: document.getElementById("curUser").value, nextUser: document.getElementById("nxtUser").value, newBid: document.getElementById("newBidvalue").value
+                    })
+
+                }).then(response => response.json())
+                    .then(data => {
+                        console.log('Response from server:', data);
+                        document.getElementById("curUser").value = data['userName']
+                        document.getElementById("nxtUser").value = data['nextUser']
+                        document.getElementById("cur_bid").value = newBidval
+                        document.getElementById("curPlayer").value = data['curPlayer']
+                        playerName = data['curPlayer']
+
+                        var imageSrc = "/static/images/" + playerName + ".jpeg";
+                        console.log('New Img src value is', imageSrc);
+                        document.getElementById("playerImage").setAttribute('src', imageSrc);
+                        var logged_user_name = document.getElementById("logged_user").value
+                        // alert(logged_user_name)
+                        if (logged_user_name == data['nextUser']) {
+                            document.getElementById("newBidvalue").readOnly = true
+                            document.getElementById("bidBtn").disabled = true
+                            document.getElementById("nxtPlayerBtn").disabled = true
+                            document.getElementById("newBidvalue").disabled = true
+                            document.getElementById("userPrompt").innerHTML = 'Please wait for the other user'
+                        }
+                        else {
+                            document.getElementById("newBidvalue").readOnly = false
+                            document.getElementById("bidBtn").disabled = false
+                            document.getElementById("nxtPlayerBtn").disabled = false
+                            document.getElementById("newBidvalue").disabled = false
+                            document.getElementById("userPrompt").innerHTML = 'Play On'
+                        }
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+            else {
+                var curBidvalue = document.getElementById("cur_bid").value
+                var response = prompt("Do you want the player for ? If yes, say Yes");
+
+                if (response == "Yes" || response == "yes") {
+                    //alert("Hello, " + response + "!");
+                    // Call api to update the users present for the current user and update the JS file too.
+                    // I guess just the JS file is fine.
+                    var myList = document.getElementById("playerList");
+                    var newItem = document.createElement("li");
+                    newItem.textContent = document.getElementById("curPlayer").value
+                    myList.appendChild(newItem);
+                    document.getElementById("userBudget").value -= document.getElementById("cur_bid").value
+
+
+                    var itemCount = myList.getElementsByTagName("li").length;
+                    new_url = '/updatePlayerUser'
+                    if (itemCount == 5) {
+
+                        socket.emit("midGameParent", { logged_user: document.getElementById("logged_user").value })
+
+                    }
+                    console.log('Interesting selection of color in VSCode')
+                    // Updating the userPlayerBought Map
+                    // fetch(new_url, {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Content-Type': 'application/json'
+                    //     },
+                    //     body: JSON.stringify({
+                    //         userName: document.getElementById("curUser").value, newPlayer: document.getElementById("curPlayer").value
+                    //     }
+                    //     )
+                    // }).then(response => response.json())
+                    //     .then(data => {
+                    //         console.log('Updating Player User')
+
+
+                    //     })
+                    //     .catch(error => {
+                    //         console.error('Error:', error);
+                    //     })
+
+                    // });
+
+
+                } else {
+                    alert("Onto the next Player");
+                }
+
+                new_url = '/match/' + document.getElementById("roomID").value
+                var newBidval = 5
+                fetch(new_url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data: document.getElementById("roomID").value, curUser: document.getElementById("curUser").value, nextUser: document.getElementById("nxtUser").value, newBid: document.getElementById("newBidvalue").value
+                    })
+
+                }).then(response => response.json())
+                    .then(data => {
+                        console.log('Response from server:', data);
+                        document.getElementById("curUser").value = data['userName']
+                        document.getElementById("nxtUser").value = data['nextUser']
+                        document.getElementById("cur_bid").value = newBidval
+                        document.getElementById("curPlayer").value = data['curPlayer']
+                        playerName = data['curPlayer']
+                        var imageSrc = "/static/images/" + playerName + ".jpeg";
+                        console.log('New Img src value is', imageSrc);
+                        document.getElementById("playerImage").setAttribute('src', imageSrc);
+                        var logged_user_name = document.getElementById("logged_user").value
+                        // alert(logged_user_name)
+                        if (logged_user_name == data['nextUser']) {
+                            document.getElementById("newBidvalue").readOnly = true
+                            document.getElementById("bidBtn").disabled = true
+                            document.getElementById("nxtPlayerBtn").disabled = true
+                            document.getElementById("newBidvalue").disabled = true
+                            document.getElementById("userPrompt").innerHTML = 'Please wait for the other user'
+                        }
+                        else {
+                            document.getElementById("newBidvalue").readOnly = false
+                            document.getElementById("bidBtn").disabled = false
+                            document.getElementById("nxtPlayerBtn").disabled = false
+                            document.getElementById("newBidvalue").disabled = false
+                            document.getElementById("userPrompt").innerHTML = 'Play On'
+                        }
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        });
+    </script>
+    <!-- <form action="http://127.0.0.1:5053/match/{{ roomNo }}" method="post"> -->
+
+    <!-- </form> -->
+</body>
+
+</html>

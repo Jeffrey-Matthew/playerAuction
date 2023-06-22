@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+        crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" name="Room ID" id="roomID">
+    <button id="join">Join Room</button>
+
+    <script>
+        // Connect to the Socket.IO server
+        const socket = io({ autoConnect: false });
+
+        // // Join a room
+        socket.connect()
+        document.getElementById("join").addEventListener("click", function () {
+            console.log("Create Btn has been clicked")
+            socket.connect()
+            console.log(document.getElementById("roomID").value)
+            socket.emit('join_room', { room: document.getElementById("roomID").value });
+            var button = document.getElementById('join');
+
+            // Disable the button
+            button.disabled = true;
+
+        })
+
+        socket.on('redirect', function (data) {
+            var params = Object.keys(data.params).map(function (key) {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(data.params[key]);
+            }).join('&');
+
+            window.location.href = data.url + '?' + params; // Redirect to the new page
+        });
+        // socket.on('lobby_redirect', function (data) {
+
+
+        //     window.location.href = data.url; // Redirect to the new page
+        // });
+
+        // Leave a room
+        // socket.emit('leave_room', { room: 'room1' });
+
+    </script>
+
+</body>
+
+</html>

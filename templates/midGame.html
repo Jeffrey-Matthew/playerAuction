@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mid Game</title>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+
+<body>
+
+    <div id="Lobby" class={{waitToggle}}>
+        <h4>Please wait as the other player is choosing from the rest</h4>
+        <h4>Your Players are:</h4>
+        <ol>
+            {% for selectedPlayer in selectedPlayers %}
+            <li>{{selectedPlayer}}</li>
+            {% endfor %}
+        </ol>
+    </div>
+    <div id="chooseRest" class={{chooseRestToggle}}>
+        <h4>Your Players are:</h4>
+        <ol>
+            {% for selectedPlayer in selectedPlayers %}
+            <li>{{selectedPlayer}}</li>
+            {% endfor %}
+        </ol>
+        <h1>Choose the Rest</h1>
+        <h3>Players:</h3>
+        <form>
+            {% for player in players %}
+            <input type="checkbox" name={{player}} value={{player}} id={{player}} onclick="limitSelection()">
+            <label for={{player}}>{{player}}</label>
+            <br>
+            {% endfor %}
+            <button type="button" onclick="submitSelection()">Submit</button>
+        </form>
+        <input type="text" name="" id="selLimit" value={{selLimit}} disabled>
+    </div>
+    <script>
+        var selectedCount = 0;
+        const socket = io({ autoConnect: false });
+
+        // // Join a room
+        socket.connect()
+        function limitSelection() {
+            var selectedOptions = document.querySelectorAll('input[type="checkbox"]:checked');
+            selectedCount = selectedOptions.length;
+            console.log('Selected Count is', selectedCount)
+            if (selectedCount >= document.getElementById("selLimit").value) {
+                var unselectedOptions = document.querySelectorAll('input[type="checkbox"]:not(:checked)');
+                for (var i = 0; i < unselectedOptions.length; i++) {
+                    unselectedOptions[i].disabled = true;
+                }
+            } else {
+                var allOptions = document.querySelectorAll('input[type="checkbox"]');
+                for (var i = 0; i < allOptions.length; i++) {
+                    allOptions[i].disabled = false;
+                }
+            }
+        }
+
+        function submitSelection() {
+            var selectedOptions = document.querySelectorAll('input[type="checkbox"]:checked');
+            var selectedValues = [];
+            for (var i = 0; i < selectedOptions.length; i++) {
+                selectedValues.push(selectedOptions[i].value);
+            }
+            if (selectedOptions.length < document.getElementById("selLimit").value) {
+                alert("Please select more.")
+            }
+            else {
+                socket.emit('restSelected', { resList: selectedValues })
+            }
+            console.log('Selected Options:', selectedValues);
+            // Perform further actions based on the selected options
+        }
+
+        socket.on('resultsPage', function (data) {
+            window.location.href = 'results/'
+
+        })
+    </script>
+</body>
+
+</html>
