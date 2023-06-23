@@ -1,0 +1,72 @@
+#Lobby {
+    background-color: lightgray;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+#Lobby h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+#Lobby ol {
+    margin-bottom: 20px;
+}
+
+#Lobby li {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+#chooseRest {
+    background-color: lightblue;
+    padding: 20px;
+}
+
+#chooseRest h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#chooseRest h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+#chooseRest form {
+    margin-bottom: 20px;
+}
+
+#chooseRest input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+#chooseRest label {
+    font-weight: bold;
+}
+
+#chooseRest button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#chooseRest button:hover {
+    background-color: #45a049;
+}
+
+#selLimit {
+    display: block;
+    margin-top: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+#selLimit {
+    display: none;
+}
