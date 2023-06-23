@@ -4,7 +4,6 @@ from __init__ import create_app, db,socketio
 from flask_socketio import SocketIO, emit, join_room, leave_room,disconnect
 import ssl 
 import os 
-from flask_sslify import SSLify
 
 app = create_app() # we initialize our flask app using the __init__.py function
 async_mode = None
