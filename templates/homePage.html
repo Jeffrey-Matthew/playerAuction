@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/homePage.css') }}">
+</head>
+
+<body>
+    <div>
+        <form action="{{url_for('auth.addUser')}}" method="post">
+            <label for="nameField">Please Provide Your Name to start:</label>
+            <input type="text" name="nameField" id="nameField" autocomplete="off">
+            <input type="submit" value="Let me in, bro!">
+        </form>
+    </div>
+</body>
+
+</html>
