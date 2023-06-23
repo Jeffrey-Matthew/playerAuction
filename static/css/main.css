@@ -1,73 +1,123 @@
-#curuser {
-    color: green;
-    font-weight: bolder;
-
+.container {
+    display: flex;
+    justify-content: space-between;
 }
 
-body {
-    background-color: lightskyblue;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+.content {
+    flex-basis: 50%;
+    padding: 20px;
+}
+
+#reqdAttr {
+    display: none;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+input[type="submit"],
+input[type="button"] {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    background-color: #45a049;
+}
+
+h4 {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    margin-top: 20px;
+}
+
+#PlayerBox {
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+
+#playerList {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+#playerList li {
+    margin-bottom: 5px;
+}
+
+#playerList li:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .content {
+        margin-bottom: 20px;
+    }
+}
+
+#playerImage {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+}
+
+#userPrompt {
+    position: relative;
+    left: 0;
+    top: 0;
+    font-size: 36px;
+    color: royalblue;
+    animation: moveAnimation 2s linear;
+}
+
+@keyframes moveAnimation {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(calc(100% - 100px));
+        /* Adjust the value based on your container's width */
+    }
+}
+
+
+#bidBtn:disabled,
+#nxtPlayerBtn:disabled {
+    opacity: 0.6;
+    /* Reduce opacity to indicate disabled state */
+    cursor: not-allowed;
+    /* background-color: gray; */
+    /* color: lightgray; */
+    /* Change cursor to not-allowed */
+    /* Add any additional styles you want for disabled buttons */
 }
 
 .hidden {
     display: none;
-}
-
-
-label {
-    font-weight: bold;
-}
-
-#demo {
-    text-align: center;
-    font-size: 60px;
-    margin-top: 0px;
-}
-
-.resultContainer {
-    display: flex;
-    height: 100%;
-}
-
-.left,
-.right {
-    flex: 1;
-    overflow: auto;
-}
-
-.left {
-    background-color: lightcoral;
-}
-
-.right {
-    background-color: lightseagreen;
-}
-
-#reqdAttr {
-
-    display: none;
-}
-
-/* #roomID {
-    display: none;
-} */
-
-.container {
-    display: flex;
-    flex-direction: row;
-    /* align-items: center;
-    /* Vertically center the content */
-    /* justify-content: center; */
-    /* Horizontally center the content */
-    /* height: 100vh; */
-    /* */
-
-    /* Set a height for the container if needed */
-
-}
-
-#PlayerBox {
-    border: 3px solid springgreen;
 }

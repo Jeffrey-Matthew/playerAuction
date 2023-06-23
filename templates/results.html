@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Here are the Results!</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
 </head>
 
 <body>
@@ -18,6 +18,7 @@
             <ol>
                 {% for selectedPlayer in userOnePlayers %}
                 <li>{{selectedPlayer}}</li>
+                <img id="playerImage" src="{{url_for('static', filename='images/' +selectedPlayer+ '.jpeg')}}" />
                 {% endfor %}
             </ol>
         </div>
@@ -27,6 +28,7 @@
             <ol>
                 {% for selectedPlayer in userTwoPlayers %}
                 <li>{{selectedPlayer}}</li>
+                <img id="playerImage" src="{{url_for('static', filename='images/' +selectedPlayer+ '.jpeg')}}" />
                 {% endfor %}
             </ol>
         </div>

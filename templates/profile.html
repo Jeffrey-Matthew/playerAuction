@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <h1 class="title">
     Welcome, {{ name }}!
     <form action="{{url_for('gameModule.createGame')}}" method="post">
@@ -11,5 +12,10 @@
 
         <input name="joinBtn" id="joinGame" type="submit" value="Join Game" />
     </form>
+    <div class="football-container">
+        <div class="football"></div>
+
+    </div>
+
 </h1>
 {% endblock %}

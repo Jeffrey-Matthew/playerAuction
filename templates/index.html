@@ -1,10 +1,41 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
 
-{% block content %}
-<h1 class="title">
-    Flask Login Example
-</h1>
-<h2 class="subtitle">
-    Easy authentication and authorization in Flask.
-</h2>
-{% endblock %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/hmePage.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-side">
+            <!-- Button 1 -->
+            <form action="{{url_for('gameModule.createGame')}}" method="post">
+                <button class="button">CREATE GAME</button>
+            </form>
+            <form action="{{ url_for('gameModule.joinGame') }}" method="post">
+                <!-- Button 2 -->
+                <button class="button">JOIN A GAME</button>
+            </form>
+        </div>
+        <div class="right-side">
+            <h2>TO Know</h2>
+            <p>Create Game will lead to a Page where you can create a Room with any number ID of your choice.</p>
+            <p>Join Game will lead to a Page where you need to provide the RoomID which was earlier created by your
+                opposition.</p>
+
+        </div>
+    </div>
+    <div class="container">
+        <div class="left-side">
+            <img src="{{ url_for('static', filename='images/psSmallBkg.jpg') }}" alt="">
+        </div>
+        <div class="right-side">
+            <img src="{{ url_for('static', filename='images/psSmallBkg.jpg') }}" alt="">
+        </div>
+    </div>
+    </div>
+
+
+</body>
+
+</html>

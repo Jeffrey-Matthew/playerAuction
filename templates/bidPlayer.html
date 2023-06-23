@@ -44,49 +44,66 @@
     <div class="container">
         <div class="content">
             <p id="userPrompt">{{ userActionPrompt }}</p>
+            <h4>{{userName}} VS {{nextUser}}</h4>
             <div id="reqdAttr">
-                <input type="text" name="logged_user" id="logged_user" value={{logged_user}} readonly disabled>
-                <!-- <label for="roomNo">Room No::</label> -->
-                <input type="text" id="roomID" name="roomID" value={{ roomNo }} readonly disabled><br><br>
-
-                <!-- <label for="curUser">Current User::</label> -->
-                <input type="text" id="curUser" name="curUser" value={{ userName }} readonly disabled><br><br>
-                <!-- <label for="nxtUser">Next User::</label> -->
-                <input type="text" id="nxtUser" name="nxtUser" value={{ nextUser }} readonly disabled><br><br>
+                <div class="form-group">
+                    <label for="logged_user">Logged User:</label>
+                    <input type="text" name="logged_user" id="logged_user" value="{{logged_user}}" readonly disabled>
+                </div>
+                <div class="form-group">
+                    <label for="roomID">Room ID:</label>
+                    <input type="text" id="roomID" name="roomID" value="{{ roomNo }}" readonly disabled>
+                </div>
+                <div class="form-group">
+                    <label for="curUser">Current User:</label>
+                    <input type="text" id="curUser" name="curUser" value="{{ userName }}" readonly disabled>
+                </div>
+                <div class="form-group">
+                    <label for="nxtUser">Next User:</label>
+                    <input type="text" id="nxtUser" name="nxtUser" value="{{ nextUser }}" readonly disabled>
+                </div>
             </div>
-            <label for="cur_bid">Current Bid::</label>
-            <input type="text" id="cur_bid" name="cur_bid" value={{ bid }} readonly><br><br>
-            <p>Enter Your Bid:</p>
-            <p><input type="number" id="newBidvalue" min={{ bid }} name="vb" {{ editToggleBid }} /></p>
-            <div>
-                <p><input name="bidBtnVal" id="bidBtn" type="submit" value="Bid Player" {{ editToggleBid }} /></p>
-                <p><input name="nxtPlayerVal" id="nxtPlayerBtn" type="submit" value="Next, please!" {{ editToggleBid }}>
-                </p>
-                <!-- <input type="button" value="MidGame Test" id="midGameTest"> -->
+            <div class="form-group">
+                <label for="cur_bid">Current Bid:</label>
+                <input type="text" id="cur_bid" name="cur_bid" value="{{ bid }}" readonly>
             </div>
-            <!-- <input name="nxtPlayerVal" id="nxtPlayerBtn" type="submit" value="Next Player" /> -->
-            <label for="curPlayer">Current Player::</label>
-            <input type="text" id="curPlayer" name="Current Player" value={{ playerName }} readonly
-                onchange="updateImageSrc()"><br><br>
-
+            <div class="form-group">
+                <label for="newBidvalue">Enter Your Bid:</label>
+                <input type="number" id="newBidvalue" min="{{ bid }}" name="vb" {{ editToggleBid }}>
+            </div>
+            <div class="form-group">
+                <input name="bidBtnVal" id="bidBtn" type="submit" value="Bid Player" {{ editToggleBid }}>
+                <input name="nxtPlayerVal" id="nxtPlayerBtn" type="submit" value="Next, please!" {{ editToggleBid }}>
+            </div>
+            <div class="form-group">
+                <label for="curPlayer">Current Player:</label>
+                <input type="text" id="curPlayer" name="Current Player" value="{{ playerName }}" readonly
+                    onchange="updateImageSrc()">
+            </div>
             <img id="playerImage" src="{{url_for('static', filename='images/' +playerName+ '.jpeg')}}" align="middle" />
         </div>
         <div class="content">
-
-
             <div id="PlayerBox">
-                <label for="userBudget">Your Budget (in USD) </label>
-                <input type="number" name="userBudget" id="userBudget" value=50 readonly>
+                <div class="form-group">
+                    <label for="userBudget">Your Budget (in USD):</label>
+                    <input type="number" name="userBudget" id="userBudget" value="50" readonly>
+                </div>
                 <h3>Your Players</h3>
-                <ol id="playerList">
-
+                <ol id="playerList"></ol>
+                <h3>Players to come</h3>
+                <ol id="remainingPlayers">
+                    {% for remainingPlayer in remainingPlayers %}
+                    <li>{{remainingPlayer}}</li>
+                    {% endfor %}
                 </ol>
             </div>
         </div>
     </div>
+
     <script>
 
         // playerName = 'Dhoni'
+
         const socket = io({ autoConnect: false });
 
         // // Join a room
@@ -94,7 +111,7 @@
         const element = document.getElementById("nxtPlayerBtn");
 
         if (element) {
-            element.addEventListener('click', function () {
+            element.addEventListener("click", function () {
 
                 socket.emit('nxtPlayerParent', { logged_user: document.getElementById("logged_user").value, room: document.getElementById("roomID").value });
             });
@@ -201,6 +218,7 @@
 
 
         socket.on('nxtPlayerPrompt', function (data) {
+
             var clicked_userName = data['clickedUserName']
             var logged_user_name = document.getElementById("logged_user").value
             //alert(clicked_userName)
@@ -219,6 +237,12 @@
                 }).then(response => response.json())
                     .then(data => {
                         console.log('Response from server:', data);
+                        const playerList = document.getElementById('remainingPlayers');
+                        // alert(playerList)
+                        if (playerList.children.length > 0) {
+                            // Remove the first item from the list
+                            playerList.removeChild(playerList.firstChild);
+                        }
                         document.getElementById("curUser").value = data['userName']
                         document.getElementById("nxtUser").value = data['nextUser']
                         document.getElementById("cur_bid").value = newBidval
@@ -236,6 +260,12 @@
                             document.getElementById("nxtPlayerBtn").disabled = true
                             document.getElementById("newBidvalue").disabled = true
                             document.getElementById("userPrompt").innerHTML = 'Please wait for the other user'
+                            const playerList = document.getElementById('remainingPlayers');
+                            // alert(playerList)
+                            if (playerList.children.length > 0) {
+                                // Remove the first item from the list
+                                playerList.removeChild(playerList.firstChild);
+                            }
                         }
                         else {
                             document.getElementById("newBidvalue").readOnly = false
@@ -243,10 +273,22 @@
                             document.getElementById("nxtPlayerBtn").disabled = false
                             document.getElementById("newBidvalue").disabled = false
                             document.getElementById("userPrompt").innerHTML = 'Play On'
+                            const playerList = document.getElementById('remainingPlayers');
+                            // alert(playerList)
+                            if (playerList.children.length > 0) {
+                                // Remove the first item from the list
+                                playerList.removeChild(playerList.firstChild);
+                            }
                         }
 
                     })
                     .catch(error => {
+                        const playerList = document.getElementById('remainingPlayers');
+                        // alert(playerList)
+                        if (playerList.children.length > 0) {
+                            // Remove the first item from the list
+                            playerList.removeChild(playerList.firstChild);
+                        }
                         console.error('Error:', error);
                     });
             }
@@ -267,7 +309,7 @@
 
                     var itemCount = myList.getElementsByTagName("li").length;
                     new_url = '/updatePlayerUser'
-                    if (itemCount == 5) {
+                    if (itemCount == 2) {
 
                         socket.emit("midGameParent", { logged_user: document.getElementById("logged_user").value })
 
@@ -313,6 +355,12 @@
 
                 }).then(response => response.json())
                     .then(data => {
+                        const playerList = document.getElementById('remainingPlayers');
+                        // alert(playerList)
+                        if (playerList.children.length > 0) {
+                            // Remove the first item from the list
+                            playerList.removeChild(playerList.firstChild);
+                        }
                         console.log('Response from server:', data);
                         document.getElementById("curUser").value = data['userName']
                         document.getElementById("nxtUser").value = data['nextUser']
@@ -330,6 +378,12 @@
                             document.getElementById("nxtPlayerBtn").disabled = true
                             document.getElementById("newBidvalue").disabled = true
                             document.getElementById("userPrompt").innerHTML = 'Please wait for the other user'
+                            const playerList = document.getElementById('remainingPlayers');
+                            // alert(playerList)
+                            if (playerList.children.length > 0) {
+                                // Remove the first item from the list
+                                playerList.removeChild(playerList.firstChild);
+                            }
                         }
                         else {
                             document.getElementById("newBidvalue").readOnly = false
@@ -337,16 +391,28 @@
                             document.getElementById("nxtPlayerBtn").disabled = false
                             document.getElementById("newBidvalue").disabled = false
                             document.getElementById("userPrompt").innerHTML = 'Play On'
+                            const playerList = document.getElementById('remainingPlayers');
+                            // alert(playerList)
+                            if (playerList.children.length > 0) {
+                                // Remove the first item from the list
+                                playerList.removeChild(playerList.firstChild);
+                            }
                         }
 
                     })
                     .catch(error => {
+                        const playerList = document.getElementById('remainingPlayers');
+                        // alert(playerList)
+                        if (playerList.children.length > 0) {
+                            // Remove the first item from the list
+                            playerList.removeChild(playerList.firstChild);
+                        }
                         console.error('Error:', error);
                     });
             }
         });
     </script>
-
+    <!-- <form action="http://127.0.0.1:5053/match/{{ roomNo }}" method="post"> -->
 
     <!-- </form> -->
 </body>

@@ -72,6 +72,28 @@ def signup_post():
 
     return redirect(url_for('auth.login'))
 
+@auth.route('/',methods=['POST','GET'])
+def addUser():
+    if request.method == 'POST':
+        username = request.form.get("nameField")
+        email = username +'@jeff.com'
+        user = User.query.filter_by(email=email).first() 
+        if user:
+        # print(username) 
+        # Check whether user already exists in the Dbase, if yes, log him in. Else, provide a default password and sign him up.
+            login_user(user, remember=True)
+            return redirect(url_for('basicPages.index'))
+        else:
+            password ='sijinthatha123'
+            new_user = User(email=email, name=username, password=generate_password_hash(password, method='sha256'))
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user, remember=True)
+            return redirect(url_for('basicPages.index'))
+    else:
+        print('Home Page is being called!')
+        return render_template('homePage.html')
+
 @auth.route('/logout')
 @login_required
 def logout():

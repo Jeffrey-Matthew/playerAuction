@@ -11,7 +11,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room,disconnect
 basicPages = Blueprint('basicPages', __name__)
 
 
-@basicPages.route('/')
+@basicPages.route('/home')
 def index():
     return render_template('index.html')
 

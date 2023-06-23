@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template,redirect,url_for,request,flash,jsonify
-# from werkzeug.security import generate_password_hash, check_password_hash
+#from werkzeug.security import generate_password_hash, check_password_hash
 from flask_socketio import emit,join_room,leave_room
 from flask_login import login_user, login_required, logout_user,current_user
 from models import User
@@ -101,7 +101,7 @@ def lobbyRoom():
 @bPlayer.route('/waitRoom/', methods=['POST', 'GET'])
 @login_required
 def waitRoom():
-    # global roomMap
+    global roomMap
     # cur_user = current_user.name
     # if roomId in roomMap:
     #     user1 = roomMap[roomId]
@@ -123,13 +123,15 @@ def waitRoom():
     roomId=''
     values = ''
     for key, value in params.items():
-        roomId = key
+        
         #roomMap[roomId] = [value[0],value[1]]
         
         print(f"{key}: {value}")
         values = value.split(',') 
-    roomMap[roomId] = [values[0],values[1],True]
-    playerMap[roomId] = 0 
+        if len(values) == 3:
+            roomId = key
+            roomMap[roomId] = [values[0],values[1],True]
+            playerMap[roomId] = 0 
     #return render_template('index.html')
     return redirect(url_for('bPlayer.playGame',roomId=roomId))
     #return render_template('lobby.html',cur_user=cur_user)
@@ -198,7 +200,7 @@ def playGame(roomId):
         #     else:
         #         editToggleBid ='readonly'
             logged_user = current_user.name
-            return render_template('bidPlayer.html',bid = newBid,userName = user1,playerName = playerList[playerMap[roomId]],nextUser = user2,editToggleBid=editToggleBid,roomNo=roomId,logged_user=logged_user,userActionPrompt = userActionPrompt)
+            return render_template('bidPlayer.html',bid = newBid,userName = user1,playerName = playerList[playerMap[roomId]],nextUser = user2,editToggleBid=editToggleBid,roomNo=roomId,logged_user=logged_user,userActionPrompt = userActionPrompt,remainingPlayers= playerList[playerMap[roomId]+1:])
         else:
             # if user1 == current_user.name:
             #     editToggleBid = ''
@@ -217,7 +219,7 @@ def playGame(roomId):
                 editToggleBid = ''
             else:
                 editToggleBid ='readonly'
-            return render_template('bidPlayer.html',bid = newBid,userName = user2,playerName = playerList[playerMap[roomId]],nextUser = user1,editToggleBid=editToggleBid,roomNo=roomId)
+            return render_template('bidPlayer.html',bid = newBid,userName = user2,playerName = playerList[playerMap[roomId]],nextUser = user1,editToggleBid=editToggleBid,roomNo=roomId,remainingPlayers= playerList[playerMap[roomId]+1:])
 
 
 
@@ -247,14 +249,17 @@ def midGameSelection():
     selectedPlayers = [] #Finished player - 5 players
     # print('passedData',clickedUser)
     print('List of players',playerLists.split(','))
-    selLimit =6 -  len(playerLists.split(','))
+
+    selLimit =2 -  len(playerLists.split(','))
     logged_user = current_user.name 
     waitToggle,chooseRestToggle = '',''
     # print(type(playerLists))
     presentPlayers = []
     
     for player in playerLists.split(','):
-        presentPlayers.append(player)
+        if not player=='':
+            presentPlayers.append(player)
+    selLimit =2 - len(presentPlayers)
     userPlayers[logged_user] = presentPlayers
     if logged_user == clickedUser:
         chooseRestToggle = 'hidden'
@@ -302,7 +307,7 @@ def handle_rest_selected(data):
     curPlayers = userPlayers[userName]
     for player in resList:
         curPlayers.append(player)
-    userPlayers[userName] = curPlayers[1:]
+    userPlayers[userName] = curPlayers
     emit('resultsPage',broadcast=True)
     
 @bPlayer.route('/midGame/results/')
