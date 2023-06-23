@@ -80,7 +80,7 @@
                 <input type="text" id="curPlayer" name="Current Player" value="{{ playerName }}" readonly
                     onchange="updateImageSrc()">
             </div>
-            <img id="playerImage" src="{{url_for('static', filename='images/' +playerName+ '.jpeg')}}" align="middle" />
+            <img id="playerImage" src="{{url_for('static', filename='images/' +playerName+ '.jpg')}}" align="middle" />
         </div>
         <div class="content">
             <div id="PlayerBox">
@@ -249,7 +249,8 @@
                         document.getElementById("curPlayer").value = data['curPlayer']
                         playerName = data['curPlayer']
 
-                        var imageSrc = "/static/images/" + playerName + ".jpeg";
+                        // var imageSrc = "/static/images/" + playerName + ".jpeg";
+                        var imageSrc = "/static/images/" + playerName + ".jpg";
                         console.log('New Img src value is', imageSrc);
                         document.getElementById("playerImage").setAttribute('src', imageSrc);
                         var logged_user_name = document.getElementById("logged_user").value
@@ -309,7 +310,7 @@
 
                     var itemCount = myList.getElementsByTagName("li").length;
                     new_url = '/updatePlayerUser'
-                    if (itemCount == 2) {
+                    if (itemCount == 5) {
 
                         socket.emit("midGameParent", { logged_user: document.getElementById("logged_user").value })
 
@@ -367,7 +368,8 @@
                         document.getElementById("cur_bid").value = newBidval
                         document.getElementById("curPlayer").value = data['curPlayer']
                         playerName = data['curPlayer']
-                        var imageSrc = "/static/images/" + playerName + ".jpeg";
+                        // var imageSrc = "/static/images/" + playerName + ".jpeg";
+                        var imageSrc = "/static/images/" + playerName + ".jpg";
                         console.log('New Img src value is', imageSrc);
                         document.getElementById("playerImage").setAttribute('src', imageSrc);
                         var logged_user_name = document.getElementById("logged_user").value

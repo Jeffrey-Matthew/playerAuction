@@ -86,7 +86,8 @@ def bid():
     return render_template('bidPlayer.html',bid = 5,userName = 'jeff',playerName = 'Kohli',nextUser = 'Matt')
 
 
-playerList = ['Kohli','Dhoni','Sachin','Gill','steveSmith','yuvraj','brettLee','mikeHussey','ponting','abd','mccullum','root','sanga','dravid','jimmy']
+# playerList = ['Kohli','Dhoni','Sachin','Gill','steveSmith','yuvraj','brettLee','mikeHussey','ponting','abd','mccullum','root','sanga','dravid','jimmy']
+playerList  = ['Ajmal','Yomi','Andrew','Aravind','Maddy','Rajesh','Rajil','Reva','Rohit','Sanjeevi','Sanjith','Sijin','Tezan','Vasu','Venky']
 playerIdx=0
 userPlayers = {}
 
@@ -239,18 +240,18 @@ def updatePlayerMap():
     print('UserPlayer Map',userPlayers)
     return []
 
-
+maxPlayers = 5
 @bPlayer.route('/midGame/',methods=['POST','GET'])
 @login_required
 def midGameSelection():
-    global playerList,playerIdx
+    global playerList,playerIdx,maxPlayers
     clickedUser = request.args.get('arg1')
     playerLists = request.args.get('arg2')
     selectedPlayers = [] #Finished player - 5 players
     # print('passedData',clickedUser)
     print('List of players',playerLists.split(','))
 
-    selLimit =2 -  len(playerLists.split(','))
+    selLimit =maxPlayers -  len(playerLists.split(','))
     logged_user = current_user.name 
     waitToggle,chooseRestToggle = '',''
     # print(type(playerLists))
@@ -259,7 +260,7 @@ def midGameSelection():
     for player in playerLists.split(','):
         if not player=='':
             presentPlayers.append(player)
-    selLimit =2 - len(presentPlayers)
+    selLimit =maxPlayers - len(presentPlayers)
     userPlayers[logged_user] = presentPlayers
     if logged_user == clickedUser:
         chooseRestToggle = 'hidden'

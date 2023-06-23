@@ -18,7 +18,7 @@
             <ol>
                 {% for selectedPlayer in userOnePlayers %}
                 <li>{{selectedPlayer}}</li>
-                <img id="playerImage" src="{{url_for('static', filename='images/' +selectedPlayer+ '.jpeg')}}" />
+                <img id="playerImage" src="{{url_for('static', filename='images/' +selectedPlayer+ '.jpg')}}" />
                 {% endfor %}
             </ol>
         </div>
@@ -28,7 +28,7 @@
             <ol>
                 {% for selectedPlayer in userTwoPlayers %}
                 <li>{{selectedPlayer}}</li>
-                <img id="playerImage" src="{{url_for('static', filename='images/' +selectedPlayer+ '.jpeg')}}" />
+                <img id="playerImage" src="{{url_for('static', filename='images/' +selectedPlayer+ '.jpg')}}" />
                 {% endfor %}
             </ol>
         </div>
