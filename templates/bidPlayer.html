@@ -80,7 +80,7 @@
                 <input type="text" id="curPlayer" name="Current Player" value="{{ playerName }}" readonly
                     onchange="updateImageSrc()">
             </div>
-            <img id="playerImage" src="{{url_for('static', filename='images/' +playerName+ '.jpg')}}" align="middle" />
+            <img id="playerImage" src="{{url_for('static', filename='images/' +playerName+ '.JPG')}}" align="middle" />
         </div>
         <div class="content">
             <div id="PlayerBox">
@@ -250,7 +250,7 @@
                         playerName = data['curPlayer']
 
                         // var imageSrc = "/static/images/" + playerName + ".jpeg";
-                        var imageSrc = "/static/images/" + playerName + ".jpg";
+                        var imageSrc = "/static/images/" + playerName + ".JPG";
                         console.log('New Img src value is', imageSrc);
                         document.getElementById("playerImage").setAttribute('src', imageSrc);
                         var logged_user_name = document.getElementById("logged_user").value
@@ -369,7 +369,7 @@
                         document.getElementById("curPlayer").value = data['curPlayer']
                         playerName = data['curPlayer']
                         // var imageSrc = "/static/images/" + playerName + ".jpeg";
-                        var imageSrc = "/static/images/" + playerName + ".jpg";
+                        var imageSrc = "/static/images/" + playerName + ".JPG";
                         console.log('New Img src value is', imageSrc);
                         document.getElementById("playerImage").setAttribute('src', imageSrc);
                         var logged_user_name = document.getElementById("logged_user").value
