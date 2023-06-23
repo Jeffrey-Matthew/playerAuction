@@ -312,6 +312,7 @@ def handle_rest_selected(data):
     
 @bPlayer.route('/midGame/results/')
 def resultsPage():
+    global roomMap
     users =  []
     for key in userPlayers:
         users.append(key)
@@ -322,6 +323,7 @@ def resultsPage():
         user_1_players.append(players)
     for players in userPlayers[user2]:    
         user_2_players.append(players)
+    roomMap = {}
     return render_template('results.html',userTwoPlayers =user_2_players,userOnePlayers= user_1_players,user1=user1,user2=user2 )
 
 @socketio.on('refreshPage')
